@@ -1,5 +1,6 @@
 /** @file traceback_helper.h
- * 	@brief provides the definitions for the get_next_ret_addr and get_cur_ebp functions
+ * 	@brief provides the definitions for the get_next_ret_addr, get_cur_ebp
+ * 	and get_next_ebp functions
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
  */

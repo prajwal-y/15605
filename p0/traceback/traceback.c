@@ -4,7 +4,8 @@
  *  This file contains the traceback function for the traceback library
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug Fix for alarming test remaining
+ *  @bug Prints stack trace only till __libc_start_main(). The usability
+ *  of the tool was considered to make this decision. 
  */
 
 #include <signal.h>
@@ -35,6 +36,10 @@ void traceback(FILE *fp)
 	void *reg_ebp = get_cur_ebp();
 
 	while(1) {
+		if(setjmp(env)) {
+      fprintf(stderr, "FATAL\n");
+			break;
+    }
 		void *ret_addr = get_next_ret_addr(reg_ebp);
 		void *func_addr = get_func_addr(ret_addr);
 		reg_ebp = get_next_ebp(reg_ebp);

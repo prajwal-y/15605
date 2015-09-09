@@ -7,7 +7,8 @@
  *	traceback_print.h file instead of this file.
  *
  *	@author Prajwal Yadapadithaya (pyadapad)
- *	@bug Fix for alarming test
+ *	@bug In the case of invalid strings in a string array, the
+ *	formatting of the string array may not work for all situations.
  */
 
 #include <stdlib.h>
@@ -20,6 +21,15 @@
 #include "traceback_internal.h"
 #include "traceback_print.h"
 
+/*
+ * The traceback tool is designed to print the stack trace
+ * till the function __libc_start_main is encountered.
+ * __libc_start_main() function is responsible for initializing
+ * the execution environment before calling main() function of
+ * the user program with the appropriate arguments. This function
+ * was chosen keeping in mind the usability of this tool for user
+ * programs.
+ */
 const char *main_fn = "__libc_start_main";
 
 int print_func_name(void *func_addr, void *reg_ebp, FILE *fp) {

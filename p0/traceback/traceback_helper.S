@@ -29,6 +29,18 @@ get_cur_ebp:
 	ret
 
 get_next_ebp:
-	movl	4(%esp),%ebx
+	pushl	%ebp		
+	movl	%esp,%ebp	
+	pushl	%edi
+	pushl	%ebx
+	pushl	%esi
+
+	movl	8(%ebp),%ebx
   movl	(%ebx),%eax
+	
+	popl	%esi
+	popl	%ebx
+	popl	%edi
+	movl	%ebp,%esp
+	popl	%ebp
   ret
