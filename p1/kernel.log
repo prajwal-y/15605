@@ -1,1 +1,5 @@
-315813734873 kdbg: oh noes! where are my handlers
+54148781709 kdbg: Hello from handler_install function
+54148783708 kdbg: idt_base: 0x00100100
+54148785809 kdbg: idt_keyboard: 0x00100208
+54148786430 kdbg: handler_install done
+54148787322 kdbg: Hello from a brand new kernel!

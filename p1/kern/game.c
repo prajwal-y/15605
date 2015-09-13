@@ -34,8 +34,6 @@ void tick(unsigned int numTicks);
 
 #include <string.h>
 
-#include <nonogram_db.h>
-
 /** @brief Kernel entrypoint.
  *  
  *  This is the entrypoint for the kernel.  It simply sets up the
@@ -56,9 +54,19 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
      * when you are ready.
      */
 
+	//enable_interrupts();
+
     lprintf( "Hello from a brand new kernel!" );
 
-    //lprintf( "Entries in my built-in layout database: %d!", ng_layout_count );
+	clear_console();
+
+	putbyte('T');
+
+	putbytes("Hello world testing this new screen console driver this is kickass bro 2345678901 123", 85);
+
+	set_cursor(24, 10);
+
+	putbytes("Hello world testing this new screen console driver this is kickass bro 2345678901 123", 85);
 
     while (1) {
         continue;
