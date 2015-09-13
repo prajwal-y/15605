@@ -58,7 +58,7 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
 
     lprintf( "Hello from a brand new kernel!" );
 
-    lprintf( "Entries in my built-in layout database: %d!", ng_layout_count );
+    //lprintf( "Entries in my built-in layout database: %d!", ng_layout_count );
 
     while (1) {
         continue;
