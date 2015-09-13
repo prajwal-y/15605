@@ -60,13 +60,15 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
 
 	clear_console();
 
+	//MAGIC_BREAK;
+
 	putbyte('T');
 
-	putbytes("Hello world testing this new screen console driver this is kickass bro 2345678901 123", 85);
+	putbytes("Hello world testing this\n new screen console\n driver this is kickass bro 2345678901 123", 87);
 
 	set_cursor(24, 10);
 
-	putbytes("Hello world testing this new screen console driver this is kickass bro 2345678901 123", 85);
+	putbytes("Hello world testing this new\n screen console\b driver this is kickass bro 2345678901 123\r", 88);
 
     while (1) {
         continue;

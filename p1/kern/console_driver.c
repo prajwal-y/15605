@@ -25,9 +25,22 @@ char cur_color = FGND_WHITE; //Keeps track of the current color
 
 int putbyte(char ch) {
 
-	set_char_at_pos(ch, cur_color, cur_pos);
-
-	cur_pos++;
+	switch(ch) {
+		case '\n':
+			cur_pos += CONSOLE_WIDTH - (cur_pos%CONSOLE_WIDTH);
+			break;
+		case '\r':
+			cur_pos -= cur_pos%CONSOLE_WIDTH;
+			break;
+		case '\b':
+			cur_pos--;
+			set_char_at_pos(' ', cur_color, cur_pos);
+			break;
+		default:
+			set_char_at_pos(ch, cur_color, cur_pos);
+			cur_pos++;
+			break;
+	}
 	
 	//If current position is beyond console size, scroll one row
 	if(cur_pos == CONSOLE_SIZE) {
@@ -37,6 +50,7 @@ int putbyte(char ch) {
 	if(cursor_visible) {
 		set_hardware_cursor(cur_pos);
 	}
+
 	return 0;
 
 }
