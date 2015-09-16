@@ -54,7 +54,7 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
      * when you are ready.
      */
 
-	//enable_interrupts();
+	enable_interrupts();
 
     lprintf( "Hello from a brand new kernel!" );
 
@@ -64,11 +64,18 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
 
 	putbyte('T');
 
+
 	putbytes("Hello world testing this\n new screen console\n driver this is kickass bro 2345678901 123", 87);
 
+	printf("Testing printf\n");
 	set_cursor(24, 10);
 
 	putbytes("Hello world testing this new\n screen console\b driver this is kickass bro 2345678901 123\r", 88);
+
+	/*int i = 0;
+	for(i=0; i<(2*25*80); i++) {
+		printf("a-a");
+	}*/
 
     while (1) {
         continue;

@@ -30,7 +30,7 @@ TABSTOP = 4
 # the object files which make up your drivers.
 ##################################################
 #
-COMMON_OBJS = install_driver.o console_driver.o keyboard_driver.o timer_driver.o
+COMMON_OBJS = install_driver.o console_driver.o keyboard_driver.o timer_driver.o timer_handler.o
 
 ##################################################
 # Object files from 410kern/ for just the game

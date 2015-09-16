@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <asm.h>
 #include <stdint.h>
+#include <string.h>
 
 #define CONSOLE_SIZE (CONSOLE_WIDTH*CONSOLE_HEIGHT)
 #define CURSOR_INVISIBLE ((CONSOLE_WIDTH*CONSOLE_HEIGHT)+1)
@@ -141,14 +142,17 @@ void set_hardware_cursor(int position) {
 void scroll_console() {
 	int i, j;
     for(i = 0; i < CONSOLE_HEIGHT-1; i++) {
-        for(j = 0; j < CONSOLE_WIDTH; j++) {
+
+		memcpy((void *)(CONSOLE_MEM_BASE+(i*2*CONSOLE_WIDTH)), (void *)(CONSOLE_MEM_BASE+((i+1)*2*CONSOLE_WIDTH)), 2*CONSOLE_WIDTH);
+
+        /*for(j = 0; j < CONSOLE_WIDTH; j++) {
 			int new_pos = ((i+1)*CONSOLE_WIDTH + j);
 			char ch, color;
 			get_char_at_pos(&ch, &color, new_pos);
 			
 			int pos = ((i*CONSOLE_WIDTH) + j);
 			set_char_at_pos(ch, color, pos);
-        }
+        }*/
     }
 
 	//Set the last row to empty

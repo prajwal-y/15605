@@ -3,11 +3,7 @@
  *	@brief Interface for the keyboard handler
  *
  *	@author Prajwal Yadapadithaya (pyadapad)
- *	@bug Not implemented
+ *	@bug None
  **/
-
-#include <p1kern.h>
-#include <stdio.h>
-#include <simics.h>
 
 void getchar(void);
