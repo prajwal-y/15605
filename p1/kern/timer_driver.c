@@ -12,7 +12,32 @@
 #include <asm.h>
 #include <interrupt_defines.h>
 
-void test_timer() {
-	lprintf("In timer handler");
+void (*callback_function) ();
+unsigned int tickcount;
+
+/**
+ * @brief Function to initialize the callback function
+ * to be called by the timer driver.
+ *
+ * @param func_addr Address of the function to be called
+ * by the timer driver
+ *
+ * @return Void
+ */
+void initialize_callback(void *func_addr) {
+	callback_function = func_addr;
+	tickcount = 0;
+}
+
+/**
+ * @brief Function which is called by the timer interrupt 
+ * handler. This function is responsible for calling the 
+ * callback function with the current count of timeticks.
+ *
+ * @return Void
+ */
+void timer_tick() {
+	tickcount++;
+	callback_function(tickcount);
 	outb(INT_CTL_PORT, INT_ACK_CURRENT);
 }

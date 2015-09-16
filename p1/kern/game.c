@@ -72,10 +72,10 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
 
 	putbytes("Hello world testing this new\n screen console\b driver this is kickass bro 2345678901 123\r", 88);
 
-	/*int i = 0;
+	int i = 0;
 	for(i=0; i<(2*25*80); i++) {
 		printf("a-a");
-	}*/
+	}
 
     while (1) {
         continue;
@@ -90,6 +90,6 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
  *  should be invoked by timer interrupts.
  *
  **/
-void tick(unsigned int numTicks)
-{
+void tick(unsigned int numTicks) {
+	printf("%d\n", numTicks);
 }

@@ -19,8 +19,8 @@
 #include <timer_defines.h>
 #include <interrupt_defines.h>
 
-#include "inc/keyboard_driver.h"
-#include "inc/timer_handler.h"
+#include "inc/handler_helper.h"
+#include "inc/timer_driver.h"
 
 /*IDT ENTRY CONSTANTS*/
 #define RESERVED 0
@@ -68,8 +68,13 @@ int handler_install(void (*tickback)(unsigned int)) {
 
 	int retval;
 
+	/*Keyboard driver initialization*/
+
 	//Create an IDT entry for trap gate for keyboard driver
 
+
+	/*Timer driver initialization*/
+	initialize_callback(tickback);	
 
 	//Initialize timer frequency
 	initialize_timer_frequency();

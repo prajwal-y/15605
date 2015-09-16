@@ -6,6 +6,6 @@
  *	@bug None
  **/
 
-void timer_handler(void);
+void timer_tick(void);
 
-void test_timer(void);
+void initialize_callback(void *);
