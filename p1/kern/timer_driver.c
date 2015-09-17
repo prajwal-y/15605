@@ -35,6 +35,7 @@ void initialize_callback(void *func_addr) {
  * callback function with the current count of timeticks.
  *
  * @return Void
+ * @bug TODO: FIX TO RETURN IMMEDIATELY
  */
 void timer_tick() {
 	tickcount++;

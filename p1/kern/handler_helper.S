@@ -19,6 +19,7 @@ timer_handler:
 	IRET				/*Return from interrupt handler*/
 
 keyboard_handler:
-	PUSHA
-	POPA
-	IRET
+	PUSHA							/*Push all the registers on the stack*/
+	CALL	add_to_keyboard_buffer	/*Call the keyboard driver C function*/
+	POPA							/*Restore all the registers from stack*/
+	IRET							/*Return from interrupt handler*/

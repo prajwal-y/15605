@@ -6,4 +6,4 @@
  *	@bug None
  **/
 
-void getchar(void);
+void add_to_keyboard_buffer();

@@ -23,10 +23,21 @@
 #include "inc/timer_driver.h"
 
 /*IDT ENTRY CONSTANTS*/
-#define RESERVED 0
-#define SIZE 15
-#define DPL 0
+#define HANDLER_OFFSET_1 16
+#define SEGMENT_SELECTOR 16
+#define RESERVED 5
+#define ZEROES 3
+#define SIZE 5
+#define DPL 2
 #define P 1
+#define HANDLER_OFFSET_2 16
+
+/*IDT ENTRY VALUES*/
+#define RESERVED_VAL 0
+#define ZEROES_VAL 0
+#define SIZE_VAL 15
+#define DPL_VAL 0
+#define P_VAL 1
 
 /*TIMER CONSTANTS*/
 #define TIMER_PERIOD_LSB 100
@@ -39,13 +50,14 @@
  * Data structure to pack the IDT entry.
  */
 struct idt_entry {
-	unsigned int handler_offset_1:16;
-	unsigned int seg_selector:16;
-	unsigned int reserved:8;
-	unsigned int size:5;
-	unsigned int dpl:2;
-	unsigned int p:1;
-	unsigned int handler_offset_2:16;
+	unsigned int handler_offset_1:HANDLER_OFFSET_1;
+	unsigned int seg_selector:SEGMENT_SELECTOR;
+	unsigned int reserved:RESERVED;
+	unsigned int zeroes:ZEROES;
+	unsigned int size:SIZE;
+	unsigned int dpl:DPL;
+	unsigned int p:P;
+	unsigned int handler_offset_2:HANDLER_OFFSET_2;
 };
 
 /*Helper functions*/
@@ -69,9 +81,7 @@ int handler_install(void (*tickback)(unsigned int)) {
 	int retval;
 
 	/*Keyboard driver initialization*/
-
-	//Create an IDT entry for trap gate for keyboard driver
-
+	retval = add_idt_entry(KEY_IDT_ENTRY, keyboard_handler);
 
 	/*Timer driver initialization*/
 	initialize_callback(tickback);	
@@ -127,9 +137,10 @@ int add_idt_entry(int entry_index, void *handler_addr) {
 void populate_idt_entry(struct idt_entry *idt_entry, void *handler_addr) {
 	idt_entry->handler_offset_1 = (int)handler_addr;
 	idt_entry->seg_selector = SEGSEL_KERNEL_CS;
-	idt_entry->reserved = RESERVED;
-	idt_entry->size = SIZE;
-	idt_entry->dpl = DPL;
-	idt_entry->p = P;
+	idt_entry->reserved = RESERVED_VAL;
+	idt_entry->zeroes = ZEROES_VAL;
+	idt_entry->size = SIZE_VAL;
+	idt_entry->dpl = DPL_VAL;
+	idt_entry->p = P_VAL;
 	idt_entry->handler_offset_2 = ((int)handler_addr>>16);
 }
