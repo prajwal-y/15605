@@ -15,10 +15,13 @@
 #define CONSOLE_SIZE (CONSOLE_WIDTH*CONSOLE_HEIGHT)
 #define CURSOR_INVISIBLE ((CONSOLE_WIDTH*CONSOLE_HEIGHT)+1)
 
+#define COLOR_MIN 0
+#define COLOR_MAX 255
+
 static void set_hardware_cursor(int);
 static void scroll_console();
 static void set_char_at_pos(char, char, int);
-//static void get_char_at_pos(char *, char *, int);
+static void process_char(char);
 
 int cur_pos = 0; //Keeps track of the current position of the cursor
 int cursor_visible = 1; //Boolean to keep track whether cursor is visible
@@ -40,23 +43,7 @@ char cur_color = FGND_WHITE; //Keeps track of the current color
  *
  */
 int putbyte(char ch) {
-
-	switch(ch) {
-		case '\n':
-			cur_pos += CONSOLE_WIDTH - (cur_pos%CONSOLE_WIDTH);
-			break;
-		case '\r':
-			cur_pos -= cur_pos%CONSOLE_WIDTH;
-			break;
-		case '\b':
-			cur_pos?:cur_pos--;
-			set_char_at_pos(' ', cur_color, cur_pos);
-			break;
-		default:
-			set_char_at_pos(ch, cur_color, cur_pos);
-			cur_pos++;
-			break;
-	}
+	process_char(ch);
 	
 	//If current position is beyond console size, scroll one row
 	if(cur_pos == CONSOLE_SIZE) {
@@ -67,8 +54,7 @@ int putbyte(char ch) {
 		set_hardware_cursor(cur_pos);
 	}
 
-	return 0;
-
+	return (int)ch;
 }
 
 /**
@@ -102,6 +88,9 @@ void putbytes(const char *s, int len) {
  * @return 0 is successful, -1 if the color code is invalid
  */
 int set_term_color(int color) {
+	if(color < COLOR_MIN || color > COLOR_MAX) {
+		return -1;
+	} 
 	cur_color = (char)color;
 	return 0;
 }
@@ -130,8 +119,8 @@ void get_term_color(int *color) {
  * @return 0 if successful, -1 if the new position is invalid
  */
 int set_cursor(int row, int col) {
-	int pos = row * CONSOLE_WIDTH + col;
-	if(pos > CONSOLE_SIZE) {
+	int pos = row * CONSOLE_WIDTH + col - 1;
+	if(pos >= CONSOLE_SIZE) {
 		return -1;
 	}
 	cur_pos = pos;
@@ -229,6 +218,32 @@ char get_char(int row, int col) {
 	return *(char *)(CONSOLE_MEM_BASE + (2*pos));
 }
 
+/**
+ * @brief Processes a character to be printed in the screen.
+ * Handles special characters such as '\n', '\r' and '\b'
+ *
+ * @param c Character to be processed.
+ * @return Void
+ */
+void process_char(char ch) {
+	switch(ch) {
+		case '\n':
+			cur_pos += CONSOLE_WIDTH - (cur_pos%CONSOLE_WIDTH);
+			break;
+		case '\r':
+			cur_pos -= cur_pos%CONSOLE_WIDTH;
+			break;
+		case '\b':
+			cur_pos?:cur_pos--;
+			set_char_at_pos(' ', cur_color, cur_pos);
+			break;
+		default:
+			set_char_at_pos(ch, cur_color, cur_pos);
+			cur_pos++;
+			break;
+	}
+}
+
 /*
  * @brief Sets the hardware cursor to the specified position
  *
@@ -253,13 +268,11 @@ void set_hardware_cursor(int position) {
 void scroll_console() {
 	int i;
 
-	//Copy all rows but the first one into a temporary buffer
-	int temp = (2*((CONSOLE_WIDTH*CONSOLE_HEIGHT)-CONSOLE_WIDTH));
-	char temp_buf[temp];
-	memcpy(temp_buf, (void *)(CONSOLE_MEM_BASE+(2*CONSOLE_WIDTH)), temp);
-
-	//Copy the temporary buffer back to the start of the console
-	memcpy((void *)CONSOLE_MEM_BASE, temp_buf, temp);
+	//Shift rows up by one row
+	int copysize = (2*((CONSOLE_WIDTH*CONSOLE_HEIGHT)-CONSOLE_WIDTH));
+	memmove((void *)CONSOLE_MEM_BASE, 
+			(void *)(CONSOLE_MEM_BASE+(2*CONSOLE_WIDTH)), 
+			copysize);
 
 	//Set the last row to empty
 	for(i = 0; i < CONSOLE_WIDTH; i++) {
@@ -283,12 +296,3 @@ void set_char_at_pos(char ch, char color, int pos) {
 	*(char *)(CONSOLE_MEM_BASE + (2*pos)) = ch;
 	*(char *)(CONSOLE_MEM_BASE + (2*pos)+1) = cur_color;
 }
-
-/**
- * @brief Gets the character and the color at the specified
- * position
- */
-/*void get_char_at_pos(char *ch, char *color, int pos) {
-	*ch = *(char *)(CONSOLE_MEM_BASE + (2*pos));
-	*color = *(char *)(CONSOLE_MEM_BASE + (2*pos+1));
-}*/
