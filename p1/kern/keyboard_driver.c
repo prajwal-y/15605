@@ -133,11 +133,16 @@ void notify_pic() {
  * are no characters present, -1 is returned.
  */
 int readchar() {
-	key *first = dequeue();
-	if(first == NULL) {
-		return -1;
+	key *first;
+	while(((first=dequeue()) != NULL) && 
+			((!KH_HASDATA(first->ch)) ||
+			(KH_ISMAKE(first->ch)))) {
+		free(first);
 	}
-	kh_type key = first->ch;
-	free(first); /*Free this memory. We don't need it anymore*/
-	return key;
+
+	if(first != NULL) {
+		return KH_GETCHAR(first->ch);
+	}
+
+	return -1;
 }

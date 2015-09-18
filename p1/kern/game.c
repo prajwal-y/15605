@@ -20,6 +20,7 @@ void tick(unsigned int numTicks);
 #include <stdio.h>
 #include <simics.h>                 /* lprintf() */
 #include <malloc.h>
+#include <keyhelp.h>
 
 /* multiboot header file */
 #include <multiboot.h>              /* boot_info */
@@ -33,6 +34,22 @@ void tick(unsigned int numTicks);
 #include <x86/asm.h>                /* enable_interrupts() */
 
 #include <string.h>
+
+char wait_char(char testc){
+	char c = -1;
+	while(c != testc) {
+		int t = readchar();
+		if(t == -1) {
+			continue;
+		}
+		c = t;
+
+		//printf("%d, %d, %c, %c ---  ", KH_HASDATA(c), KH_ISMAKE(c), KH_GETCHAR(c), c);
+	
+	};
+	return c;
+}
+
 
 /** @brief Kernel entrypoint.
  *  
@@ -72,6 +89,14 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
 
 	putbytes("Hello world testing this new\n screen console\b driver this is kickass bro 2345678901 123\r", 88);
 
+	set_cursor(5, 5);
+
+
+	wait_char('t');
+	//printf("%c ", wait_char('c'));
+	//printf("%c ", wait_char('t'));
+
+
 	/*int i = 0;
 	for(i=0; i<(2*25*80); i++) {
 		printf("a-a");
@@ -91,5 +116,5 @@ int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
  *
  **/
 void tick(unsigned int numTicks) {
-	printf("%d\n", numTicks);
+	//printf("%d\n", numTicks);
 }
