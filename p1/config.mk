@@ -47,7 +47,7 @@ COMMON_OBJS = install_driver.o console_driver.o keyboard_driver.o timer_driver.o
 # multiple parts.
 ##################################################
 #
-KERN_GAME_OBJS = game.o
+KERN_GAME_OBJS = game/game.o game/game_controller.o game/key_handler.o game/screen_painter.o
 
 ##################################################
 # Object files from 410kern/ for just the tester

@@ -40,8 +40,10 @@
 #define P_VAL 1
 
 /*TIMER CONSTANTS*/
-#define TIMER_PERIOD_LSB 100
-#define TIMER_PERIOD_MSB 0 
+#define CPU_RATE 1193182
+#define TIMER_PERIOD 100
+#define LS_BYTE(x) ((x)&0xFF)
+#define MS_BYTE(x) (((x)>>8)&0xFF)
 
 /*OTHER CONSTANTS*/
 #define IDT_ENRTY_LENGTH 8
@@ -102,8 +104,11 @@ int handler_install(void (*tickback)(unsigned int)) {
  */
 void initialize_timer_frequency() {
 	outb(TIMER_MODE_IO_PORT, TIMER_SQUARE_WAVE);
-	outb(TIMER_PERIOD_IO_PORT, TIMER_PERIOD_LSB);
-	outb(TIMER_PERIOD_IO_PORT, TIMER_PERIOD_MSB);
+
+	unsigned short rate = CPU_RATE/TIMER_PERIOD;
+
+	outb(TIMER_PERIOD_IO_PORT, LS_BYTE(rate));
+	outb(TIMER_PERIOD_IO_PORT, MS_BYTE(rate));
 }
 
 /**

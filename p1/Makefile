@@ -184,7 +184,7 @@ LDFLAGSENTRY = --entry=_main
 KCFLAGS = -nostdinc \
 	-fno-strict-aliasing -fno-builtin -fno-stack-protector -fno-omit-frame-pointer \
 	-fno-aggressive-loop-optimizations \
-	-Wall -gdwarf-2 -Werror -O1 -m32
+	-Wall -gstabs+ -gstrict-dwarf -Werror -O0 -m32
 KLDFLAGS = -static -Ttext 100000 --fatal-warnings -melf_i386
 KINCLUDES = -I$(410KDIR) -I$(410KDIR)/inc \
 			-I$(410SDIR) \
@@ -194,7 +194,7 @@ KINCLUDES = -I$(410KDIR) -I$(410KDIR)/inc \
 UCFLAGS = -nostdinc \
 	-fno-strict-aliasing -fno-builtin -fno-stack-protector -fno-omit-frame-pointer \
 	-fno-aggressive-loop-optimizations \
-	-Wall -gdwarf-2 -Werror -O1 -m32
+	-Wall -gstabs+ -gstrict-dwarf -Werror -O0 -m32
 ULDFLAGS = -static -Ttext 1000000 --fatal-warnings -melf_i386 $(LDFLAGSENTRY)
 UINCLUDES = -I$(410SDIR) -I$(410UDIR)/inc -I$(410ULIBDIR)/inc \
 						-I$(STUUDIR)/inc -I$(STUULIBDIR)/inc
