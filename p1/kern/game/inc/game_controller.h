@@ -13,11 +13,12 @@
 #define GAME_COUNT 5
 
 /*2D array to keep track of minimum moves*/
-/*static int min_moves[BOARD_SIZE_COUNT][COLOR_COUNT] = {{7, 8, 10, 12, 14},
-														{9, 11, 14, 16, 19},
-														{11, 14, 17, 20, 23},
-														{14, 17, 21, 25, 28},
-														{16, 20, 25, 29, 33}};*/
+static const int min_moves[BOARD_SIZE_COUNT][COLOR_COUNT] = 
+	{{7, 8, 10, 12, 14},
+	{9, 11, 14, 16, 19},
+	{11, 14, 17, 20, 23},
+	{14, 17, 21, 25, 28},
+	{16, 20, 25, 29, 33}};
 
 /*Board type and color*/
 static const int board_type[BOARD_SIZE_COUNT] = {6, 8, 10, 12, 14};
