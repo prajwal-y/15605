@@ -22,6 +22,7 @@ static void init_scores(void);
 void initialize_game() {
 	cur_board_type = -1; /*Setting to an invalid value*/
 	cur_color_count = -1;
+	cur_max_moves = -1;
 	init_scores();
 	cur_screen = TITLE_SCREEN;
 	paint_title_screen();
@@ -89,7 +90,7 @@ void init_scores() {
 		last5[i].flood_count = count;
 	} else {
 		last5[index].elapsed_time = time;
-		last_5[index].flood_count = count;
+		last5[index].flood_count = count;
 	}
 }*/
 
@@ -121,22 +122,50 @@ void switch_to_color_sel() {
 	cur_screen = COLOR_SEL_SCREEN;
 }
 
-void switch_to_game(void) {
+/**
+ * @brief Function to hand over the control to gameplay_handler.
+ * The actual gameplay begins when start_gameplay() is invoked.
+ *
+ * @return Void
+ */
+void switch_to_game() {
+	set_max_moves(); /*Set the maximum moves allowed for the game*/	
+	start_gameplay();
+	cur_screen = GAME_SCREEN;
 }
 
+/**
+ * @brief Switches the current screen to the instructions screen.
+ * Instruction screen can be reached from title screen and 
+ * game play screen.
+ *
+ * @return Void
+ */
 void switch_to_instr(void) {
 }
 
+/**
+ * @brief Switches the current screen to the "pause" screen.
+ * This screen can be reached only from the game play screen.
+ *
+ * @return Void
+ */
 void switch_to_pause(void) {
 }
 
+/**
+ * @brief Switches the current screen to the end-of-game screen.
+ * This screen can be reached only from gameplay screen.
+ *
+ * @return Void
+ */
 void switch_to_end(void) {
 }
 
 /**
  * @brief Sets the board size for a particular game.
  *
- * @param size_index The index of the size in the array
+ * @param type_index The index of the type in the array
  * board_type
  *
  * @return Void
@@ -160,4 +189,31 @@ void set_color_count(int color_index) {
 	if(color_index >=0 && color_index < COLOR_COUNT) {
 		cur_color_count = color_count[color_index];
 	}
+}
+
+/**
+ * @brief Sets the maximum number of moves allowed for the 
+ * current game.
+ *
+ * @param type_index Index of the type in the array board_type
+ * @param color_index Index of the count in the array color_count
+ *
+ * @return Void
+ */
+void set_max_moves() {
+	int i;
+	int type_index, color_index;
+	for(i=0; i<BOARD_SIZE_COUNT; i++) {
+		if(board_type[i] == cur_board_type) {
+			type_index = i;
+			break;
+		}
+	}
+	for(i=0; i<COLOR_COUNT; i++) {
+		if(color_count[i] == cur_color_count) {
+			color_index = i;
+			break;
+		}
+	}
+	cur_max_moves = max_moves[type_index][color_index];
 }

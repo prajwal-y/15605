@@ -294,5 +294,5 @@ void scroll_console() {
  */
 void set_char_at_pos(char ch, char color, int pos) {
 	*(char *)(CONSOLE_MEM_BASE + (2*pos)) = ch;
-	*(char *)(CONSOLE_MEM_BASE + (2*pos)+1) = cur_color;
+	*(char *)(CONSOLE_MEM_BASE + (2*pos)+1) = color;
 }

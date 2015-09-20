@@ -12,8 +12,8 @@
 
 #define GAME_COUNT 5
 
-/*2D array to keep track of minimum moves*/
-static const int min_moves[BOARD_SIZE_COUNT][COLOR_COUNT] = 
+/*2D array to keep track of maximum moves allowed*/
+static const int max_moves[BOARD_SIZE_COUNT][COLOR_COUNT] = 
 	{{7, 8, 10, 12, 14},
 	{9, 11, 14, 16, 19},
 	{11, 14, 17, 20, 23},
@@ -26,6 +26,7 @@ static const int color_count[COLOR_COUNT] = {4, 5, 6, 7, 8};
 
 int cur_board_type; /*Stores the board size for the current game*/
 int cur_color_count; /*Stores the color count for the current game*/
+int cur_max_moves; /*Stores the maximum number of moves allowed for the game*/
 
 /*strict to keep track of last 5 scores*/
 struct scores {
@@ -48,10 +49,12 @@ enum SCREEN {
 void paint_title_screen();
 void paint_board_sel_screen();
 void paint_color_sel_screen();
-void game_screen();
 void pause_screen();
 void end_screen();
 void instr_screen();
+void paint_game_screen(char **, int, int, int);
+void update_game_screen(char **, int, int, unsigned int, int, int);
+void update_grid_position(char **, int, int, int, int);
 
 /*Key press handler*/
 void read_key_char();
@@ -76,3 +79,8 @@ void switch_to_end(void);
 /*Value set functions*/
 void set_board_type(int);
 void set_color_count(int);
+void set_max_moves(void);
+
+/*Game play functions*/
+void start_gameplay(void);
+void handle_move(int);
