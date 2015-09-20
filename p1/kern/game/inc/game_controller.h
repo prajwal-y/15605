@@ -27,6 +27,7 @@ static const int color_count[COLOR_COUNT] = {4, 5, 6, 7, 8};
 int cur_board_type; /*Stores the board size for the current game*/
 int cur_color_count; /*Stores the color count for the current game*/
 int cur_max_moves; /*Stores the maximum number of moves allowed for the game*/
+unsigned int num_ticks; /*Stores the number of ticks so far*/
 
 /*strict to keep track of last 5 scores*/
 struct scores {
@@ -71,12 +72,14 @@ void initialize_game(void);
 void begin_game(void);
 
 /*Controller functions*/
+void switch_to_title_screen(void);
 void switch_to_board_sel(void);
 void switch_to_color_sel(void);
 void switch_to_game(void);
 void switch_to_instr(void);
 void switch_to_pause(void);
 void switch_to_end(void);
+void add_score(unsigned int, unsigned int);
 
 /*Value set functions*/
 void set_board_type(int);

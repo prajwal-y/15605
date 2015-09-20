@@ -11,6 +11,7 @@
 static void handle_asdw(int);
 static void handle_mark();
 static void handle_selection(int);
+static void handle_q();
 static void handle_g();
 static void handle_p();
 static void handle_r();
@@ -94,6 +95,10 @@ void read_key_char() {
 				handle_e();
 				break;
 
+			case 'Q':
+			case 'q':
+				handle_q();
+		
 			case 'I':
 			case 'i':
 				handle_i();
@@ -148,6 +153,22 @@ void handle_g() {
 	if(cur_screen == TITLE_SCREEN) {
 		switch_to_board_sel();		
 	}
+}
+
+/**
+ * @brief Function to handle when 'Q' or 'q' is
+ * pressed.
+ *
+ * This key can be pressed from game play screen and
+ * pause screen.
+ *
+ * @return Void
+ */
+void handle_q() {
+	if(cur_screen != GAME_SCREEN && cur_screen != PAUSE_SCREEN) {
+		return;
+	}
+	end_gameplay();
 }
 
 void handle_p() {

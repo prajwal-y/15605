@@ -10,7 +10,6 @@
 #include "inc/game_controller.h"
 
 static void init_scores(void);
-//static void add_score(unsigned int, unsigned int);
 
 /**
  * @brief This function is used to initialize the key 
@@ -24,8 +23,7 @@ void initialize_game() {
 	cur_color_count = -1;
 	cur_max_moves = -1;
 	init_scores();
-	cur_screen = TITLE_SCREEN;
-	paint_title_screen();
+	switch_to_title_screen();
 }
 
 /**
@@ -49,6 +47,7 @@ void tick(unsigned int numTicks) {
 	if((cur_screen == GAME_SCREEN) && ((numTicks % 100) == 0)) {
 		increment_time();
 	}
+	num_ticks++;
 }
 
 /**
@@ -74,7 +73,7 @@ void init_scores() {
  *
  * @return Void
  */
-/*void add_score(unsigned int time, unsigned int count) {
+void add_score(unsigned int time, unsigned int count) {
 	int i, index = -1;
 	for(i=0; i<GAME_COUNT; i++) {
 		if(last5[i].elapsed_time == 0) {
@@ -85,8 +84,8 @@ void init_scores() {
 
 	if(index == -1) {
 		for(i=0; i<GAME_COUNT-1; i++) {
-			last5[i].elapsed_time = last_5[i+1].elapsed_time;
-			last5[i].flood_count = last_5[i+1].flood_count;
+			last5[i].elapsed_time = last5[i+1].elapsed_time;
+			last5[i].flood_count = last5[i+1].flood_count;
 		}
 		last5[i].elapsed_time = time;
 		last5[i].flood_count = count;
@@ -94,7 +93,20 @@ void init_scores() {
 		last5[index].elapsed_time = time;
 		last5[index].flood_count = count;
 	}
-}*/
+}
+
+/**
+ * @brief Switches the current screen to the main title screen
+ * This screen is first shown when the game is started, and also
+ * can be reached from the gameplay screen, pause screen and the
+ * instructions screen.
+ *
+ * @return Void
+ */
+void switch_to_title_screen() {	
+	paint_title_screen();
+	cur_screen = TITLE_SCREEN;
+}
 
 /**
  * @brief Switches the current screen to the board selection screen.

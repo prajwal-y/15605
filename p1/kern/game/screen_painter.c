@@ -65,7 +65,7 @@ void print_last5() {
 	for(i=GAME_COUNT-1; i>=0; i--) {
 		if(last5[i].elapsed_time != 0) {
 			set_cursor(++row, col);
-			printf("Time = %d:%d Flood count = %d", 
+			printf("Time = %d:%02d Flood count = %d", 
 					last5[i].elapsed_time/60, 
 					last5[i].elapsed_time%60, 
 					last5[i].flood_count);

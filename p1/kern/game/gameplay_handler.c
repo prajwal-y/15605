@@ -7,15 +7,20 @@
  *  @bug Not implemented
  */
 
+#include <mt19937int.h>
 #include "inc/game_controller.h"
+
+#define COLOR_CODE_MULTIPLIER 16
 
 char **grid;
 int curX, curY;
 int fill_count;
-int moves_count;
-int time_elapsed;
+unsigned int moves_count;
+unsigned int time_elapsed;
 
 /*Helper functions*/
+void allocate_grid(void);
+void deallocate_grid(void);
 void initialize_grid(void);
 char get_random_color(void);
 int fill_color(char color);
@@ -28,12 +33,14 @@ int fill_color(char color);
  * @Return Void
  */
 void start_gameplay() {
+	allocate_grid();
 	initialize_grid();
 	curX = 0;
 	curY = 0;
 	fill_count = 1;
 	moves_count = 0;
 	time_elapsed = 0;
+	sgenrand(num_ticks);
 	paint_game_screen(grid, cur_board_type, cur_board_type, cur_max_moves);
 }
 
@@ -54,17 +61,16 @@ void resume_gameplay() {
  * @return Void
  */
 void end_gameplay() {
+	add_score(time_elapsed, moves_count);
 
-	//TODO: Update scores
-	
-
-	free(grid[0]);
-	free(grid);
+	deallocate_grid();
 	curX = 0;
-    curY = 0;
-    fill_count = 1;
-    moves_count = 0;
-    time_elapsed = 0;
+	curY = 0;
+	fill_count = 1;
+	moves_count = 0;
+	time_elapsed = 0;
+
+	switch_to_title_screen();
 }
 
 /**
@@ -74,13 +80,42 @@ void end_gameplay() {
  */
 void initialize_grid() {
 	int i,j;
-	grid = (char **)malloc(sizeof(char **)*cur_board_type);
-	grid[0] = (char *)malloc(sizeof(char)*cur_board_type*cur_board_type);
+
 	for(i=0; i<cur_board_type; i++) {
 		for(j=0; j<cur_board_type; j++) {
 			grid[i][j] = get_random_color();
 		}
 	}
+}
+
+/**
+ * @brief Allocates memory for the grid required for the
+ * current game. Should be called by start_gameplay()
+ *
+ * @return Void
+ */
+void allocate_grid() {
+	int i;
+	
+	grid = (char **)malloc(sizeof(char **)*cur_board_type);
+
+	for(i=0; i<cur_board_type; i++) {
+		grid[i] = (char *)malloc(sizeof(char)*cur_board_type);
+	}
+}
+
+/**
+ * @brief Deallocates the memory allocated for the grid.
+ * Should be called by end_gameplay()
+ *
+ * @return Void
+ */
+void deallocate_grid() {
+	int i;	
+	for(i=0; i<cur_board_type; i++) {
+		free(grid[i]);
+	}
+	free(grid);
 }
 
 /**
@@ -90,8 +125,8 @@ void initialize_grid() {
  * @return char A random color
  */
 char get_random_color() {
-	//TODO:
-	return BGND_GREEN;
+	long rand = (genrand()%cur_color_count)*COLOR_CODE_MULTIPLIER;
+	return (char)rand;
 }
 
 /**
