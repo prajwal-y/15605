@@ -22,7 +22,6 @@ static void print_grid_boundary(int, int);
 static void print_grid(char **, int, int);
 static void set_grid_selection(int, int);
 static void unset_grid_selection(char **, int, int);
-static void print_game_data(int, int, int);
 static void print_game_info(void);
 
 /**
@@ -145,7 +144,8 @@ void paint_game_screen(char **grid, int length, int height, int maxmoves) {
 	print_grid_boundary(length+1, height);
 	print_grid(grid, length, height);
 	set_grid_selection(0, 0);
-	print_game_data(0, 0, maxmoves);
+	print_game_time(0);
+	print_game_moves(0, maxmoves);
 	print_game_info();
 }
 
@@ -166,7 +166,8 @@ void paint_game_screen(char **grid, int length, int height, int maxmoves) {
 void update_game_screen(char **grid, int length, int height, 
 						unsigned int time, int moves, int maxmoves) {
 	print_grid(grid, length, height);
-	print_game_data(time, moves, maxmoves);	
+	print_game_time(time);
+	print_game_moves(moves, maxmoves);
 }
 
 /**
@@ -270,27 +271,36 @@ void unset_grid_selection(char **grid, int x, int y) {
 }
 
 /**
- * @brief Function to print the game progress data. The data that
- * is printed includes the time elapsed so far and number of moves
- * performed.
+ * @brief Function to print the number of moves
+ * performed so far in the game
  *
- * @param time Time elapsed so far in seconds
  * @param moves Number of moves performed so far
  * @param maxmoves Maximum number of moves allowed for the game
  *
  * @return Void
  */
-void print_game_data(int time, int moves, int maxmoves) {
+void print_game_moves(int moves, int maxmoves) {	
+	int row = SCREEN_HEIGHT/3;
+	int col = (2*SCREEN_WIDTH)/3;
 	
+	set_cursor(row+1, col);
+	printf("Moves = %d/%d", moves, maxmoves);
+}
+
+/**
+ * @brief Function to print the time elapsed so far
+ * performed so far in the game
+ *
+ * @param time Time elapsed in the game so far.
+ *
+ * @return Void
+ */
+void print_game_time(int time) {
 	int row = SCREEN_HEIGHT/3;
 	int col = (2*SCREEN_WIDTH)/3;
 	
 	set_cursor(row, col);
-	printf("Time elapsed = %d:%d", (time/60), (time%60));
-
-	set_cursor(row+1, col);
-	printf("Moves = %d/%d", moves, maxmoves);
-	
+	printf("Time elapsed = %d:%02d", (time/60), (time%60));
 }
 
 /**

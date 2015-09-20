@@ -55,6 +55,8 @@ void instr_screen();
 void paint_game_screen(char **, int, int, int);
 void update_game_screen(char **, int, int, unsigned int, int, int);
 void update_grid_position(char **, int, int, int, int);
+void print_game_moves(int, int);
+void print_game_time(int);
 
 /*Key press handler*/
 void read_key_char();
@@ -83,4 +85,8 @@ void set_max_moves(void);
 
 /*Game play functions*/
 void start_gameplay(void);
+void resume_gameplay(void);
+void end_gameplay(void);
 void handle_move(int);
+void process_mark(void);
+void increment_time(void);

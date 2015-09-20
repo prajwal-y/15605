@@ -9,11 +9,8 @@
 
 /*Key handler functions*/
 static void handle_asdw(int);
-static void handle_1();
-static void handle_2();
-static void handle_3();
-static void handle_4();
-static void handle_5();
+static void handle_mark();
+static void handle_selection(int);
 static void handle_g();
 static void handle_p();
 static void handle_r();
@@ -21,7 +18,6 @@ static void handle_e();
 static void handle_i();
 
 /*Other helper functions*/
-static void selection_screen_handler(int);
 static void set_board_type_and_switch(int);
 static void set_color_count_and_switch(int);
 
@@ -61,20 +57,24 @@ void read_key_char() {
 				handle_asdw(2);
 				break;
 
+			case ' ':
+				handle_mark();
+				break;
+
 			case '1':
-				handle_1();
+				handle_selection(0);
 				break;
 			case '2':
-				handle_2();
+				handle_selection(1);
 				break;
 			case '3':
-				handle_3();
+				handle_selection(2);
 				break;
 			case '4':
-				handle_4();
+				handle_selection(3);
 				break;
 			case '5':
-				handle_5();
+				handle_selection(4);
 				break;
 
 			case 'G':
@@ -122,6 +122,19 @@ void handle_asdw(int num) {
 }
 
 /**
+ * @brief Function to handle key press for marking a color
+ * during the game. Can be invoked only from the game screen
+ *
+ * @return Void
+ */
+void handle_mark() {
+	if(cur_screen != GAME_SCREEN) {
+		return;
+	}
+	process_mark();
+}
+
+/**
  * @brief Function to handle when 'g' or 'G' is
  * pressed.
  *
@@ -135,61 +148,6 @@ void handle_g() {
 	if(cur_screen == TITLE_SCREEN) {
 		switch_to_board_sel();		
 	}
-}
-
-/**
- * @brief Function to handle when '1' is pressed.
- * This key will be pressed in the board type selection
- * and color count selection screens.
- *
- * @return Void
- */
-void handle_1() {
-	selection_screen_handler(0);
-}
-
-/**
- * @brief Function to handle when '2' is pressed.
- * This key will be pressed in the board type selection
- * and color count selection screens.
- *
- * @return Void
- */
-void handle_2() {
-	selection_screen_handler(1);
-}
-
-/**
- * @brief Function to handle when '3' is pressed.
- * This key will be pressed in the board type selection
- * and color count selection screens.
- *
- * @return Void
- */
-void handle_3() {
-	selection_screen_handler(2);
-}
-
-/**
- * @brief Function to handle when '4' is pressed.
- * This key will be pressed in the board type selection
- * and color count selection screens.
- *
- * @return Void
- */
-void handle_4() {
-	selection_screen_handler(3);
-}
-
-/**
- * @brief Function to handle when '5' is pressed.
- * This key will be pressed in the board type selection
- * and color count selection screens.
- *
- * @return Void
- */
-void handle_5() {
-	selection_screen_handler(4);
 }
 
 void handle_p() {
@@ -212,7 +170,7 @@ void handle_i() {
  *
  * @return Void
  */
-void selection_screen_handler(int index) {	
+void handle_selection(int index) {	
 	switch(cur_screen) {
 		case BOARD_SEL_SCREEN:
 			set_board_type_and_switch(index);

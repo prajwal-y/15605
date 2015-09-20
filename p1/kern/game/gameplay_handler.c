@@ -11,10 +11,14 @@
 
 char **grid;
 int curX, curY;
+int fill_count;
+int moves_count;
+int time_elapsed;
 
 /*Helper functions*/
 void initialize_grid(void);
 char get_random_color(void);
+int fill_color(char color);
 
 /**
  * @brief Function to initalize the data structures required
@@ -27,7 +31,40 @@ void start_gameplay() {
 	initialize_grid();
 	curX = 0;
 	curY = 0;
+	fill_count = 1;
+	moves_count = 0;
+	time_elapsed = 0;
 	paint_game_screen(grid, cur_board_type, cur_board_type, cur_max_moves);
+}
+
+/**
+ * @brief Function to resume a paused gameplay. Performs the same operations
+ * as start_gameplay() without re-initilazing the grid and other variables
+ *
+ * @return Void
+ */
+void resume_gameplay() {
+	paint_game_screen(grid, cur_board_type, cur_board_type, cur_max_moves);
+}
+
+/**
+ * @brief Function to end the gameplay. Control will be returned to 
+ * game_controller.c by displaying end game screen
+ *
+ * @return Void
+ */
+void end_gameplay() {
+
+	//TODO: Update scores
+	
+
+	free(grid[0]);
+	free(grid);
+	curX = 0;
+    curY = 0;
+    fill_count = 1;
+    moves_count = 0;
+    time_elapsed = 0;
 }
 
 /**
@@ -53,6 +90,7 @@ void initialize_grid() {
  * @return char A random color
  */
 char get_random_color() {
+	//TODO:
 	return BGND_GREEN;
 }
 
@@ -93,4 +131,49 @@ void handle_move(int direction) {
 			break;
 	}
 	update_grid_position(grid, x, y, curX, curY);
+}
+
+/**
+ * @brief Function to process the grid when a color is marked.
+ * If the color marked is same as the current flood color, nothing
+ * is done. Otherwise, the flood color is changed to the new color
+ * using a breadth first traversal of the grid starting from the 
+ * left top corner.
+ *
+ * @return Void
+ */
+void process_mark() {
+	if(grid[curX][curY] == grid[0][0]) {
+		return;
+	}
+	fill_count = fill_color(grid[curX][curY]);
+	
+	update_game_screen(grid, cur_board_type, cur_board_type, 
+						time_elapsed, moves_count, cur_max_moves);
+
+	if(fill_count == (cur_board_type*cur_board_type)) {
+		end_gameplay();
+	}
+}
+
+
+/**
+ * @brief Function to fill the color in the grid with the new color.
+ *
+ * @param color Color to be used to fill the grid
+ *
+ * @return int Count of the number of cells filled with the new color
+ * in the grid.
+ */
+int fill_color(char color) {
+	return 1;
+}
+
+/**
+ * @brief Function to increment the elapsed time. This function will
+ * be called by the callback tick funtion in game_controller.c
+ */
+void increment_time() {
+	time_elapsed++;
+	print_game_time(time_elapsed);
 }

@@ -46,7 +46,9 @@ void begin_game() {
  * @return Void
  **/
 void tick(unsigned int numTicks) {
-
+	if((cur_screen == GAME_SCREEN) && ((numTicks % 100) == 0)) {
+		increment_time();
+	}
 }
 
 /**
@@ -142,6 +144,7 @@ void switch_to_game() {
  * @return Void
  */
 void switch_to_instr(void) {
+	cur_screen = INSTR_SCREEN;
 }
 
 /**
@@ -151,6 +154,7 @@ void switch_to_instr(void) {
  * @return Void
  */
 void switch_to_pause(void) {
+	cur_screen = PAUSE_SCREEN;
 }
 
 /**
@@ -160,6 +164,7 @@ void switch_to_pause(void) {
  * @return Void
  */
 void switch_to_end(void) {
+	cur_screen = END_SCREEN;
 }
 
 /**
