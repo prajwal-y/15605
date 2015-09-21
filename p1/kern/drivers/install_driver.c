@@ -103,9 +103,7 @@ int handler_install(void (*tickback)(unsigned int)) {
  */
 void initialize_timer_frequency() {
 	outb(TIMER_MODE_IO_PORT, TIMER_SQUARE_WAVE);
-
 	unsigned short rate = CPU_RATE/TIMER_PERIOD;
-
 	outb(TIMER_PERIOD_IO_PORT, LS_BYTE(rate));
 	outb(TIMER_PERIOD_IO_PORT, MS_BYTE(rate));
 }
@@ -126,7 +124,7 @@ int add_idt_entry(int entry_index, void *handler_addr) {
 	populate_idt_entry(&new_idt_entry, handler_addr);
 	memcpy(idt_entry_addr, &new_idt_entry, sizeof(struct idt_entry));
 
-	return 0; //TODO: FIX THIS
+	return 0;
 }
 
 /**

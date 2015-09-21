@@ -144,4 +144,4 @@
 644 ad3022b0483e5f2a1f961f5763636a7a  spec/p1kern.h
 644 41dcf772a2add25270d72c1a199076b7  spec/syscall_int.h
 # finished on Fri Sep 18 23:14:40 EDT 2015
-# Fetched by ./update.sh afs at Mon Sep 21 14:24:51 EDT 2015
+# Fetched by ./update.sh afs query at Mon Sep 21 15:02:27 EDT 2015
