@@ -15,8 +15,8 @@ static void handle_q();
 static void handle_g();
 static void handle_p();
 static void handle_r();
-static void handle_e();
-static void handle_i();
+static void handle_h();
+static void handle_t();
 
 /*Other helper functions*/
 static void set_board_type_and_switch(int);
@@ -38,7 +38,7 @@ void read_key_char() {
 			continue;
 		}
 
-		lprintf("%c", ch);
+		//lprintf("%c", ch);
 		//Handle various operations
 		switch(ch) {
 			case 'A':
@@ -90,18 +90,20 @@ void read_key_char() {
 			case 'r':
 				handle_r();
 				break;
-			case 'E':
-			case 'e':
-				handle_e();
-				break;
 
 			case 'Q':
 			case 'q':
 				handle_q();
+				break;
+
+			case 'T':
+			case 't':
+				handle_t();
+				break;
 		
-			case 'I':
-			case 'i':
-				handle_i();
+			case 'H':
+			case 'h':
+				handle_h();
 				break;
 
 			default: 
@@ -150,9 +152,10 @@ void handle_mark() {
  * @return Void
  */
 void handle_g() {
-	if(cur_screen == TITLE_SCREEN) {
-		switch_to_board_sel();		
+	if(cur_screen != TITLE_SCREEN) {
+		return;
 	}
+	switch_to_board_sel();		
 }
 
 /**
@@ -168,19 +171,58 @@ void handle_q() {
 	if(cur_screen != GAME_SCREEN && cur_screen != PAUSE_SCREEN) {
 		return;
 	}
-	end_gameplay();
+	quit_gameplay();
 }
 
+/**
+ * @brief Function to handle 't' press in the end screen. Pressing
+ * 't' in the end screen takes the user to the title screen.
+ *
+ * @return Void
+ */
+void handle_t() {
+	if(cur_screen != END_SCREEN) {
+		return;
+	}
+	switch_to_title_screen();
+}
+
+/**
+ * @brief Function to handle 'p' press in the gameplay screen. Pressing
+ * 'p' during gameplay pauses the game.
+ *
+ * @return Void
+ */
 void handle_p() {
+	if(cur_screen != GAME_SCREEN) {
+		return;
+	}
+	switch_to_pause();
 }
 
+/**
+ * @brief Function to handle 'resuming' the game when in pause screen.
+ *
+ * @return Void
+ */
 void handle_r() {
+	if(cur_screen != PAUSE_SCREEN) {
+		return;
+	}
+	resume_game();
 }
 
-void handle_e() {
-}
-
-void handle_i() {
+/**
+ * @brief Function to handle showing help/instructions of the game.
+ * Invoked by pressing 'h' from title screen and gameplay screen
+ *
+ * @return Void
+ */
+void handle_h() {
+	if(cur_screen != TITLE_SCREEN && cur_screen != GAME_SCREEN) {
+		return;
+	}
+	switch_to_instr();
 }
 
 /**

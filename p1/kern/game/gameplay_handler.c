@@ -1,10 +1,11 @@
-/** @file gameplay_handler.c
- *  @brief The handler for the actual gameplay,
- *  starting from showing the color grid to
- *  winning/losing the game
+/** 
+ * @file gameplay_handler.c
+ * @brief The handler for the actual gameplay,
+ * starting from showing the color grid to
+ * winning/losing the game
  *
- *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug Not implemented
+ * @author Prajwal Yadapadithaya (pyadapad)
+ * @bug None
  */
 
 #include <mt19937int.h>
@@ -18,10 +19,13 @@ int fill_count;
 unsigned int moves_count;
 unsigned int time_elapsed;
 
+int toggle = 1;
+
 /*Helper functions*/
 void allocate_grid(void);
 void deallocate_grid(void);
 void initialize_grid(void);
+void reset_variables(void);
 char get_random_color(void);
 int fill_color(char color);
 
@@ -35,11 +39,7 @@ int fill_color(char color);
 void start_gameplay() {
 	allocate_grid();
 	initialize_grid();
-	curX = 0;
-	curY = 0;
-	fill_count = 1;
-	moves_count = 0;
-	time_elapsed = 0;
+	reset_variables();
 	sgenrand(num_ticks);
 	paint_game_screen(grid, cur_board_type, cur_board_type, cur_max_moves);
 }
@@ -52,6 +52,9 @@ void start_gameplay() {
  */
 void resume_gameplay() {
 	paint_game_screen(grid, cur_board_type, cur_board_type, cur_max_moves);
+	update_grid_position(grid, 0, 0, curX, curY);
+	print_game_time(time_elapsed);
+	print_game_moves(moves_count, cur_max_moves);
 }
 
 /**
@@ -61,15 +64,21 @@ void resume_gameplay() {
  * @return Void
  */
 void end_gameplay() {
-	add_score(time_elapsed, moves_count);
-
+	int fill_percentage = (fill_count*100)/(cur_board_type*cur_board_type);
+	int success = ((moves_count<=cur_max_moves)&&(fill_percentage==100))?1:0;
+	add_score(time_elapsed, fill_percentage, success);
 	deallocate_grid();
-	curX = 0;
-	curY = 0;
-	fill_count = 1;
-	moves_count = 0;
-	time_elapsed = 0;
+	reset_variables();
+	switch_to_end(success);
+}
 
+/**
+ * @brief Function to quite the current game. Control will be returned
+ * to game_controller.c by displaying the title screen
+ */
+void quit_gameplay() {
+	deallocate_grid();
+	reset_variables();
 	switch_to_title_screen();
 }
 
@@ -86,6 +95,20 @@ void initialize_grid() {
 			grid[i][j] = get_random_color();
 		}
 	}
+}
+
+/**
+ * @brief Function to reset the variables of the
+ * current game.
+ *
+ * @return Void
+ */
+void reset_variables() {
+	curX = 0;
+	curY = 0;
+	fill_count = 1;
+	moves_count = 0;
+	time_elapsed = 0;
 }
 
 /**
@@ -181,16 +204,52 @@ void process_mark() {
 	if(grid[curX][curY] == grid[0][0]) {
 		return;
 	}
+	moves_count++;
 	fill_count = fill_color(grid[curX][curY]);
-	
 	update_game_screen(grid, cur_board_type, cur_board_type, 
 						time_elapsed, moves_count, cur_max_moves);
 
-	if(fill_count == (cur_board_type*cur_board_type)) {
+	if(fill_count == (cur_board_type*cur_board_type) 
+			|| moves_count>=cur_max_moves) {
 		end_gameplay();
 	}
 }
 
+/**
+ * @brief Function to fill color recursively in the grid
+ *
+ * @param oldcolor Color to be replaced
+ * @param newcolor New color to be filled
+ * @param x x-coordinate of the grid to be filled
+ * @param y y-coordinate of the grid to be filled
+ * @param visited Character array to save visited cells in the grid
+ * @param change 1-change color if possible; 0-Do not change color
+ *
+ * @return Fill count
+ */
+int fill_color_recursive(char oldcolor, char newcolor, int x, int y, 
+						char *visited, int change) {
+	if(x<0 || y<0 || x>=cur_board_type || y>=cur_board_type
+		|| (grid[x][y] != oldcolor && grid[x][y] != newcolor)) {
+		return 0;
+	}
+	int index = (x*cur_board_type)+y;
+	if((visited[index]) || (grid[x][y]==oldcolor && !change)) {
+		return 0;
+	}
+	if(grid[x][y] == newcolor) {
+		change = 0;
+	} else {
+		grid[x][y] = newcolor;
+		change = 1;
+	}
+
+	visited[index] |= 1;
+	return 1+fill_color_recursive(oldcolor, newcolor, x+1, y, visited, change)+
+			fill_color_recursive(oldcolor, newcolor, x, y+1, visited, change)+
+			fill_color_recursive(oldcolor, newcolor, x-1, y, visited, change)+
+			fill_color_recursive(oldcolor, newcolor, x, y-1, visited, change);
+}
 
 /**
  * @brief Function to fill the color in the grid with the new color.
@@ -201,7 +260,11 @@ void process_mark() {
  * in the grid.
  */
 int fill_color(char color) {
-	return 1;
+	char *visited = (char *)calloc(cur_board_type*cur_board_type, 
+									sizeof(char));
+	int count = fill_color_recursive(grid[0][0], color, 0, 0, visited, 1);
+	free(visited);
+	return count;
 }
 
 /**
@@ -211,4 +274,6 @@ int fill_color(char color) {
 void increment_time() {
 	time_elapsed++;
 	print_game_time(time_elapsed);
+	toggle_grid_selection(grid, curX, curY, toggle);
+	toggle = !toggle;
 }

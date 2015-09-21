@@ -17,10 +17,10 @@
 #define SPACE ' '
 
 /*Helper functions*/
-static void print_last5(void);
+static void print_last5(int);
 static void print_grid_boundary(int, int);
 static void print_grid(char **, int, int);
-static void set_grid_selection(int, int);
+static void set_grid_selection(char **, int, int);
 static void unset_grid_selection(char **, int, int);
 static void print_game_info(void);
 
@@ -37,38 +37,49 @@ void paint_title_screen() {
 
 	hide_cursor();
 
-	int row = SCREEN_HEIGHT/4;
-	int col = SCREEN_WIDTH/2;
+	int row = SCREEN_HEIGHT/8;
+	int col = SCREEN_WIDTH/8;
 
-	set_cursor(row, col);
-	printf("%s", str_title);
+	int i;
+	for(i=0; i<8; i++) {
+		set_cursor(row++, col);
+		printf("%s", str_flood_it[i]);
+	}
 
-	col = SCREEN_WIDTH/4;
+	col = SCREEN_WIDTH/3;
 	set_cursor(row+2, col);
 	printf("%s", str_author);
 
+	col = SCREEN_WIDTH/6;
 	set_cursor(row+4, col);
 	printf("%s", str_start);
+	set_cursor(row+5, col);
+	printf("%s", str_help);
 
-	print_last5();
+	print_last5(row+4);
 
 }
 
-void print_last5() {
-	int row = SCREEN_HEIGHT/2;
-	int col = SCREEN_WIDTH/3;
+void print_last5(int row) {
+	int col = (2*SCREEN_WIDTH)/3;
 
-	set_cursor(row, col);
+	set_cursor(row++, col);
 	printf("%s", str_last5);
+	
+	set_cursor(row++, col);
+	printf("------------");
 
 	int i;
 	for(i=GAME_COUNT-1; i>=0; i--) {
 		if(last5[i].elapsed_time != 0) {
-			set_cursor(++row, col);
-			printf("Time = %d:%02d Flood count = %d", 
-					last5[i].elapsed_time/60, 
-					last5[i].elapsed_time%60, 
-					last5[i].flood_count);
+			set_cursor(row++, col);
+			if(last5[i].win) {
+				draw_char(row, col-1, 'W', BGND_BLACK|BGND_GREEN);
+			} else {
+				draw_char(row, col-1, 'L', BGND_BLACK|BGND_RED);
+			}
+			set_cursor(row, col+2);
+			printf("T(m:s)=%d:%02d F(%%)=%d%%", last5[i].elapsed_time/60, last5[i].elapsed_time%60, last5[i].flood_percentage);
 		}
 	}
 	
@@ -85,7 +96,7 @@ void paint_board_sel_screen() {
 	clear_console();
 	
 	int row = SCREEN_HEIGHT/3;
-	int col = SCREEN_WIDTH/3;
+	int col = SCREEN_WIDTH/5;
 
 	set_cursor(row, col);
 	printf("%s", str_choose_board);
@@ -112,7 +123,7 @@ void paint_color_sel_screen() {
 	clear_console();
 	
 	int row = SCREEN_HEIGHT/3;
-	int col = SCREEN_WIDTH/3;
+	int col = SCREEN_WIDTH/5;
 
 	set_cursor(row, col);
 	printf("%s", str_choose_color);
@@ -143,7 +154,7 @@ void paint_game_screen(char **grid, int length, int height, int maxmoves) {
 	clear_console();
 	print_grid_boundary(length+1, height);
 	print_grid(grid, length, height);
-	set_grid_selection(0, 0);
+	set_grid_selection(grid, 0, 0);
 	print_game_time(0);
 	print_game_moves(0, maxmoves);
 	print_game_info();
@@ -185,7 +196,7 @@ void update_game_screen(char **grid, int length, int height,
 void update_grid_position(char **grid, int oldX, int oldY, 
 							int newX, int newY) {
 	unset_grid_selection(grid, oldX, oldY);
-	set_grid_selection(newX, newY);
+	set_grid_selection(grid, newX, newY);
 }
 
 /**
@@ -245,6 +256,26 @@ void print_grid(char **grid, int length, int height) {
 }
 
 /**
+ * @brief Function to set and unset the current selection.
+ * This is used by gameplay_handler to generate blinking effect
+ * of the selected cell.
+ *
+ * @param grid 2D array containing the color of each cell in the grid
+ * @param x Value of row in the grid
+ * @param y value of column in the grid
+ * @param set 1:Set; 0:unset
+ *
+ * @return Void
+ */
+void toggle_grid_selection(char **grid, int x, int y, int set) {
+	if(set) {
+		set_grid_selection(grid, x, y);
+	} else {
+		unset_grid_selection(grid, x, y);
+	}
+}
+
+/**
  * @brief Function to set the selection in the grid
  * Sets the selection to blinking.
  *
@@ -253,8 +284,8 @@ void print_grid(char **grid, int length, int height) {
  *
  * @return Void
  */
-void set_grid_selection(int x, int y) {
-	draw_char(GRID_TOP_MARGIN+x, GRID_LEFT_MARGIN+y, SPACE, BLINK);
+void set_grid_selection(char **grid, int x, int y) {
+	draw_char(GRID_TOP_MARGIN+x, GRID_LEFT_MARGIN+y, SPACE, grid[x][y]|BLINK);
 }
 
 /**
@@ -314,26 +345,78 @@ void print_game_info() {
 	int col = (2*SCREEN_WIDTH)/3;
 	
 	set_cursor(row+2, col);
-	printf("wasd = move");
+	printf("%s", str_game_move);
 
 	set_cursor(row+3, col);
-	printf("space = mark");
+	printf("%s", str_game_mark);
 
 	set_cursor(row+4, col);
-	printf("p = pause");
+	printf("%s", str_game_pause);
 
 	set_cursor(row+5, col);
-	printf("h = help");
+	printf("%s", str_game_help);
 	
 	set_cursor(row+6, col);
-	printf("q = quit");
+	printf("%s", str_game_quit);
 }
 
+/**
+ * @brief Function to print the pause screen of the game.
+ * Shows options to resume and end the current game.
+ *
+ * @return Void
+ */
 void paint_pause_screen() {
+	clear_console();
+
+	int row = SCREEN_HEIGHT/3;
+	int col = SCREEN_WIDTH/5;
+
+	set_cursor(row, col);
+	printf("%s", str_game_paused);
+
+	set_cursor(row+2, col);
+	printf("%s", str_game_resume);
+	
+	set_cursor(row+4, col);
+	printf("%s", str_game_quit);
 }
 
-void paint_end_screen() {
+/**
+ * @brief Function to print the end screen of the current game.
+ * Shows the result of the current game.
+ *
+ * @param success 1 if won, 0 if lost
+ *
+ * @return Void
+ */
+void paint_end_screen(int success) {
+	clear_console();
+
+	int row = SCREEN_HEIGHT/3;
+	int col = SCREEN_WIDTH/5;	
+
+	set_cursor(row, col);
+	if(success) {
+		printf("%s", str_win);	
+	} else {
+		printf("%s", str_lose);
+	}
+
+	set_cursor(row+2, col);
+	printf("%s", str_start_over);
 }
 
+/**
+ * @brief Function to print the instructions of the game.
+ *
+ * @return Void
+ */
 void paint_instr_screen() {
+	clear_console();
+	int row = SCREEN_HEIGHT/4;
+    int col = SCREEN_WIDTH/5;
+
+	set_cursor(row, col);
+	printf("%s", str_instr);
 }

@@ -9,6 +9,13 @@
 
 #include "inc/game_controller.h"
 
+/*Global variables*/
+volatile int cur_board_type;
+volatile int cur_color_count;
+volatile int cur_max_moves;
+volatile unsigned int num_ticks;
+volatile enum SCREEN cur_screen;
+
 static void init_scores(void);
 
 /**
@@ -59,7 +66,8 @@ void init_scores() {
 	int i;
 	for(i=0; i<GAME_COUNT; i++) {
 		last5[i].elapsed_time = 0;
-		last5[i].flood_count = 0;
+		last5[i].flood_percentage = 0;
+		last5[i].win = 0;
 	}
 }
 
@@ -69,11 +77,12 @@ void init_scores() {
  * one is removed and the new one is added.
  *
  * @param time Elapsed time of the current game
- * @param count Flood count of the current game
+ * @param percentage Flood fill percentage of the current game
+ * @param win 1 - Won; 0 -Lost
  *
  * @return Void
  */
-void add_score(unsigned int time, unsigned int count) {
+void add_score(unsigned int time, unsigned int percentage, int win) {
 	int i, index = -1;
 	for(i=0; i<GAME_COUNT; i++) {
 		if(last5[i].elapsed_time == 0) {
@@ -85,13 +94,16 @@ void add_score(unsigned int time, unsigned int count) {
 	if(index == -1) {
 		for(i=0; i<GAME_COUNT-1; i++) {
 			last5[i].elapsed_time = last5[i+1].elapsed_time;
-			last5[i].flood_count = last5[i+1].flood_count;
+			last5[i].flood_percentage = last5[i+1].flood_percentage;
+			last5[i].win = last5[i+1].win;
 		}
 		last5[i].elapsed_time = time;
-		last5[i].flood_count = count;
+		last5[i].flood_percentage = percentage;
+		last5[i].win = win;
 	} else {
 		last5[index].elapsed_time = time;
-		last5[index].flood_count = count;
+		last5[index].flood_percentage = percentage;
+		last5[index].win = win;
 	}
 }
 
@@ -149,13 +161,25 @@ void switch_to_game() {
 }
 
 /**
+ * @brief Function to resume the game when resume is invoked from
+ * a pause screen.
+ *
+ * @return Void
+ */
+void resume_game() {
+	resume_gameplay();
+	cur_screen = GAME_SCREEN;
+}
+
+/**
  * @brief Switches the current screen to the instructions screen.
  * Instruction screen can be reached from title screen and 
  * game play screen.
  *
  * @return Void
  */
-void switch_to_instr(void) {
+void switch_to_instr() {
+	paint_instr_screen();
 	cur_screen = INSTR_SCREEN;
 }
 
@@ -165,7 +189,8 @@ void switch_to_instr(void) {
  *
  * @return Void
  */
-void switch_to_pause(void) {
+void switch_to_pause() {
+	paint_pause_screen();
 	cur_screen = PAUSE_SCREEN;
 }
 
@@ -175,7 +200,8 @@ void switch_to_pause(void) {
  *
  * @return Void
  */
-void switch_to_end(void) {
+void switch_to_end(int success) {
+	paint_end_screen(success);
 	cur_screen = END_SCREEN;
 }
 

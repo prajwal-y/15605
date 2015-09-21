@@ -24,15 +24,16 @@ static const int max_moves[BOARD_SIZE_COUNT][COLOR_COUNT] =
 static const int board_type[BOARD_SIZE_COUNT] = {6, 8, 10, 12, 14};
 static const int color_count[COLOR_COUNT] = {4, 5, 6, 7, 8};
 
-int cur_board_type; /*Stores the board size for the current game*/
-int cur_color_count; /*Stores the color count for the current game*/
-int cur_max_moves; /*Stores the maximum number of moves allowed for the game*/
-unsigned int num_ticks; /*Stores the number of ticks so far*/
+extern volatile int cur_board_type; /*Stores the board size for the current game*/
+extern volatile int cur_color_count; /*Stores the color count for the current game*/
+extern volatile int cur_max_moves; /*Stores the maximum number of moves allowed for the game*/
+extern volatile unsigned int num_ticks; /*Stores the number of ticks so far*/
 
 /*strict to keep track of last 5 scores*/
 struct scores {
 	unsigned int elapsed_time;
-	unsigned int flood_count;
+	unsigned int flood_percentage;
+	int win;
 }last5[GAME_COUNT];
 
 /*Enum to keep track of the current screen*/
@@ -44,18 +45,21 @@ enum SCREEN {
 	PAUSE_SCREEN,
 	END_SCREEN,
 	INSTR_SCREEN
-} cur_screen;
+};
+
+extern volatile enum SCREEN cur_screen;
 
 /*Function to paint screens*/
 void paint_title_screen();
 void paint_board_sel_screen();
 void paint_color_sel_screen();
-void pause_screen();
-void end_screen();
-void instr_screen();
+void paint_pause_screen();
+void paint_end_screen(int);
+void paint_instr_screen();
 void paint_game_screen(char **, int, int, int);
 void update_game_screen(char **, int, int, unsigned int, int, int);
 void update_grid_position(char **, int, int, int, int);
+void toggle_grid_selection(char **, int, int, int);
 void print_game_moves(int, int);
 void print_game_time(int);
 
@@ -78,8 +82,9 @@ void switch_to_color_sel(void);
 void switch_to_game(void);
 void switch_to_instr(void);
 void switch_to_pause(void);
-void switch_to_end(void);
-void add_score(unsigned int, unsigned int);
+void switch_to_end(int);
+void resume_game();
+void add_score(unsigned int, unsigned int, int);
 
 /*Value set functions*/
 void set_board_type(int);
@@ -90,6 +95,7 @@ void set_max_moves(void);
 void start_gameplay(void);
 void resume_gameplay(void);
 void end_gameplay(void);
+void quit_gameplay(void);
 void handle_move(int);
 void process_mark(void);
 void increment_time(void);
