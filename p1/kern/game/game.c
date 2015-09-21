@@ -15,16 +15,14 @@
  *
  * @return Does not return
  */
-int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
-{
-    handler_install(tick);
+int kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp) {
+	handler_install(tick);
 	enable_interrupts();
 	initialize_game();
 	begin_game();
 
-    while (1) {
-        continue;
-    }
-
-    return 0;
+	while (1) {
+		continue;
+	}
+	return 0;
 }
