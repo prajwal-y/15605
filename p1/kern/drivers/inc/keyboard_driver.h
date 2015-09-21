@@ -6,4 +6,9 @@
  *	@bug None
  **/
 
+#ifndef __keyboard_driver_h
+#define __keyboard_driver_h
+
 void add_to_keyboard_buffer();
+
+#endif

@@ -5,6 +5,9 @@
  *  @bug None
  */
 
+#ifndef __game_controller_h
+#define __game_controller_h
+
 #include "game_headers.h"
 
 #define BOARD_SIZE_COUNT 5
@@ -101,3 +104,5 @@ void quit_gameplay(void);
 void handle_move(int);
 void process_mark(void);
 void increment_time(void);
+
+#endif

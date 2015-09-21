@@ -1,9 +1,12 @@
 /** @file keyboard_driver.c
  *
- *  @brief The keyboard device driver code.
+ *  @brief The keyboard device driver code. The keyboard driver
+ *  stores the processed scancodes received in a queue implemented
+ *  using a doubly linked list. When a readchar request comes, the
+ *  head of the queue is removed until a valid character is obtained.
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug Not implemented
+ *  @bug
  */
 
 #include <p1kern.h>
@@ -137,11 +140,13 @@ int readchar() {
 	while(((first=dequeue()) != NULL) && 
 			((!KH_HASDATA(first->ch)) ||
 			(KH_ISMAKE(first->ch)))) {
-		free(first);
+		free(first); /*We don't need this anymore*/
 	}
 
 	if(first != NULL) {
-		return KH_GETCHAR(first->ch);
+		char c = first->ch;
+		free(first);
+		return KH_GETCHAR(c);
 	}
 
 	return -1;

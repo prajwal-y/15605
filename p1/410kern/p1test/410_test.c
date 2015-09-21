@@ -49,6 +49,9 @@ kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
 
     set_term_color(FGND_GREEN | BGND_BLACK);
 
+	set_cursor(1, 70);
+	printf("Adding a first line so that I can see the scrolling work");
+
     set_cursor(12, 34);
     printf("Hello World!\n");
     set_cursor(15, 34);
@@ -57,9 +60,16 @@ kernel_main(mbinfo_t *mbinfo, int argc, char **argv, char **envp)
     wait_char('c'); putbyte('d');
     wait_char('a'); putbyte('o');
     wait_char('t'); putbyte('g');
+
+	printf("%c", get_char(15, 34));
+
     set_cursor(16, 25);
     printf("That took %d seconds\n", seconds);
     printf("Yay kitties! - now what if you type \"dog\"?");
+
+	set_cursor(25, 70);
+	printf("Testing the scrolling as well. Let me check if scrolling works properly");
+
     while(1)
       continue;
 }

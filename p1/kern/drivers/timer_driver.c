@@ -1,9 +1,12 @@
 /** @file timer_driver.c
  *
- *  @brief Code for timer device driver
+ *  @brief Code for timer device driver. The timer driver
+ *  keeps track of the tick count and each time a tick is 
+ *  received, calls the callback function with the current
+ *  tickcount
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug Not implemented
+ *  @bug
  */
 
 #include <p1kern.h>

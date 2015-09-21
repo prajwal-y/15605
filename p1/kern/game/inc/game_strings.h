@@ -6,6 +6,9 @@
  *  @bug None
  */
 
+#ifndef __game_strings_h
+#define __game_strings_h
+
 /*Ascii art*/
 /* Generated using the link http://patorjk.com/software/taag */
 const char *str_flood_it[] = {
@@ -56,3 +59,5 @@ const char *str_instr[] = {
 		"Use wasd keys to move the selection cell in the board.",
 		"Use space key to fill the board with a particular color.",
 		"b : back to the previous screen"};
+
+#endif

@@ -1,0 +1,67 @@
+############################
+# Documentation for Flood-It
+############################
+
+####################
+# Code files
+####################
+
+kern               - Folder where driver and game code is present
+kern/drivers       - Folder where driver code is present
+kern/drivers/inc   - .h files required for driver code
+kern/game		   - Folder where game code is present
+kern/game/inc      - .h files required for game code
+
+##################################
+# Implementation of device drivers
+##################################
+
+This section describes the implementation details of the device drivers giving a brief overview
+of the files in the kern/drivers folder.
+
+install_driver.c - Responsible for installing the drivers by adding an entry in the Interrupt
+Descriptor Table for keyboard and timer drivers. The handler_install() method installs both
+the keyboard and timer drivers (after configuring the timer rate and setting the callback
+function in the timer driver).
+
+console_driver.c - This file has all the logic required for implementation of the console driver.
+All the interfaces specified in the writeup are implemented in this file.
+
+keyboard_driver.c - This file has the implementation of the keyboard driver. The keyboard driver is
+responsible for reading the scan codes from the keyboard port. The keyboard uses a queue (implemented
+using a doubly linked list) to implement the readchar() interface.
+
+timer_driver.c - This file implements the timer driver. It keeps track of the tick count and calls
+the registered callback function at regular intervals based on the frequency set (10 milliseconds in
+this case)
+
+
+############################
+# Implementation of Flood-It
+############################
+
+This section describes the implementation details of the Flood-It game which is implemented with the
+help of the driver library. All the game files (in the kern/game folder) are described below.
+
+game.c - This file contains the kernel's main function which is also the entry point for the game.
+
+game_controller.c - This file is the main controller file for the game. It handles the logic for
+switching between various screens in the game. The functions present in this file are invoked mostly
+by the key_handler (described below). 
+
+gameplay_handler.c - This file is responsible for implementing all the logic required for the actual
+gameplay of Flood-It. Actual gameplay includes initializing the color board, implementing the flood
+fill logic, and detecting end of gameplay (win, lose or quit). The color board is implemented using
+a 2D character array, with each entry in the array storing the value of the color in the corresponding
+cell. For the flood fill, a depth first traversal of the array starting from the index (0,0) is done
+with keeping track of the color in each cell. 
+
+screen_painter.c - This file is responsible for displaying all the screens in the game. The logic for
+displaying all the screens in this game is present in this file.
+
+key_handler.c - This file is responsible for handling all key press events. This file contains an
+infinite loop which listens to key presses. Depending on the key pressed and the current screen of the
+game, the corresponding controller functions are invoked.
+
+inc/game_controller.h - This header file contains the functions, variables and constants used by all
+the above four game files.

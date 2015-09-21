@@ -5,7 +5,7 @@
  *  interrupt handlers.
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug Not implemented
+ *  @bug None
  */
 
 #include <p1kern.h>
@@ -74,9 +74,8 @@ static int add_idt_entry(int, void *);
  * @param tickback Function pointer of the callback function
  * that needs to be called by the timer driver.
  *
- * @return 0 if interrupt handler is successful, -1 if not.
- *
- * @bugs Keyboard handler not installed
+ * @return 0 if interrupt handler installation is successful, 
+ * -1 if not.
  */
 int handler_install(void (*tickback)(unsigned int)) {
 

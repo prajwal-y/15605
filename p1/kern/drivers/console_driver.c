@@ -3,7 +3,6 @@
  *  @brief Implementation of the console driver code.
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug First version implemented. Need to find bugs
  */
 
 #include <p1kern.h>
@@ -119,8 +118,8 @@ void get_term_color(int *color) {
  * @return 0 if successful, -1 if the new position is invalid
  */
 int set_cursor(int row, int col) {
-	int pos = row * CONSOLE_WIDTH + col - 1;
-	if(pos >= CONSOLE_SIZE) {
+	int pos = (row-1) * CONSOLE_WIDTH + (col-1) - 1;
+	if(pos<0 || pos >= CONSOLE_SIZE) {
 		return -1;
 	}
 	cur_pos = pos;
@@ -140,8 +139,8 @@ int set_cursor(int row, int col) {
  * @return Void
  */
 void get_cursor(int *row, int *col) {
-	*row = cur_pos/CONSOLE_WIDTH;
-	*col = cur_pos%CONSOLE_WIDTH;
+	*row = (cur_pos/CONSOLE_WIDTH)+1;
+	*col = (cur_pos%CONSOLE_WIDTH)+1;
 }
 
 /**
@@ -201,7 +200,11 @@ void clear_console() {
  * @return Void
  */
 void draw_char(int row, int col, int ch, int color) {
-	int pos = ((row*CONSOLE_WIDTH) + col);
+	int pos = (((row-1)*CONSOLE_WIDTH) + (col-1));
+	if(pos<0 || pos >= CONSOLE_SIZE || 
+		(color < COLOR_MIN || color > COLOR_MAX)) {
+		return;
+	}
 	set_char_at_pos(ch, color, pos);
 }
 
@@ -214,7 +217,7 @@ void draw_char(int row, int col, int ch, int color) {
  * @return The character at (row, col).
  */
 char get_char(int row, int col) {
-	int pos = ((row*CONSOLE_WIDTH) + col);
+	int pos = (((row-1)*CONSOLE_WIDTH) + (col-1));
 	return *(char *)(CONSOLE_MEM_BASE + (2*pos));
 }
 
@@ -234,7 +237,9 @@ void process_char(char ch) {
 			cur_pos -= cur_pos%CONSOLE_WIDTH;
 			break;
 		case '\b':
-			cur_pos?:cur_pos--;
+			if(cur_pos) {
+				cur_pos--;
+			}
 			set_char_at_pos(' ', cur_color, cur_pos);
 			break;
 		default:
