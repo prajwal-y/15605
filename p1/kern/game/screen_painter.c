@@ -2,7 +2,7 @@
  *  @brief This file has functions to paint the different
  *  screens required for Flood-It
  *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug Not implemented
+ *  @bug
  */
 
 #include "inc/game_controller.h"
@@ -79,7 +79,8 @@ void print_last5(int row) {
 				draw_char(row, col-1, 'L', BGND_BLACK|BGND_RED);
 			}
 			set_cursor(row, col+2);
-			printf("T(m:s)=%d:%02d F(%%)=%d%%", last5[i].elapsed_time/60, last5[i].elapsed_time%60, last5[i].flood_percentage);
+			printf("T(m:s)=%d:%02d F(%%)=%d%%", last5[i].elapsed_time/60, 
+					last5[i].elapsed_time%60, last5[i].flood_percentage);
 		}
 	}
 	

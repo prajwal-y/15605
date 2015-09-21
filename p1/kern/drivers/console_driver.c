@@ -3,6 +3,8 @@
  *  @brief Implementation of the console driver code.
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
+ *
+ *  @bug No known bugs
  */
 
 #include <p1kern.h>
@@ -81,8 +83,6 @@ void putbytes(const char *s, int len) {
  * characters to be printed in the console.
  *
  * @param color The new color that needs to be set
- *
- * @bug need to check if color is valid
  *
  * @return 0 is successful, -1 if the color code is invalid
  */
@@ -193,9 +193,6 @@ void clear_console() {
  * @param col Column at which character needs to be printed
  * @param ch Character to be printed
  * @param color Color of the character to be printed
- *
- * @bug If any argument is invalid, the function should
- * do nothing
  *
  * @return Void
  */

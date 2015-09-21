@@ -4,7 +4,7 @@
  *  from start to end.
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug Not implemented
+ *  @bug
  */
 
 #include "inc/game_controller.h"

@@ -1,8 +1,11 @@
 /** @file key_handler.c
- *  @brief Key press handler for the game Flood it
+ *  @brief Key press handler for the game Flood it.
+ *  Reads the characters from the keyboard buffer, and
+ *  depending the current screen of the game, handles
+ *  them appropriately.
  *
  *  @author Prajwal Yadapadithaya (pyadapad)
- *  @bug Not implemented
+ *  @bug
  */
 
 #include "inc/game_controller.h"
