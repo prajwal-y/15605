@@ -16,6 +16,9 @@ volatile int cur_max_moves;
 volatile unsigned int num_ticks;
 volatile enum SCREEN cur_screen;
 
+enum SCREEN prev_screen; /*Used only for help screeen, as it can be called from
+							two differnt screens*/
+
 static void init_scores(void);
 
 /**
@@ -104,6 +107,39 @@ void add_score(unsigned int time, unsigned int percentage, int win) {
 		last5[index].elapsed_time = time;
 		last5[index].flood_percentage = percentage;
 		last5[index].win = win;
+	}
+}
+
+/**
+ * @brief Stores the previous screen when changing a screen.
+ * Currently used only when navigating to instruction screen,
+ * because it can be reached from two different screens.
+ *
+ * @param screen Previous screen
+ *
+ * @return Void
+ */
+void set_previous_screen(enum SCREEN screen) {
+	prev_screen = screen;
+}
+
+/**
+ * @brief This function is used to restore to the previous screen.
+ * The value in the variable prev_screen is checked and the game 
+ * is returned to that screen
+ *
+ * @return Void
+ */
+void restore_previous_screen() {
+	switch(prev_screen) {
+		case TITLE_SCREEN:
+			switch_to_title_screen();
+			break;
+		case GAME_SCREEN:
+			resume_game();
+			break;
+		default:
+			break;
 	}
 }
 
@@ -245,7 +281,7 @@ void set_color_count(int color_index) {
  */
 void set_max_moves() {
 	int i;
-	int type_index, color_index;
+	int type_index=-1, color_index=-1;
 	for(i=0; i<BOARD_SIZE_COUNT; i++) {
 		if(board_type[i] == cur_board_type) {
 			type_index = i;
@@ -258,5 +294,7 @@ void set_max_moves() {
 			break;
 		}
 	}
-	cur_max_moves = max_moves[type_index][color_index];
+	if(type_index != -1 && color_index != -1) {
+		cur_max_moves = max_moves[type_index][color_index];
+	}
 }

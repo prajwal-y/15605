@@ -47,4 +47,12 @@ const char *str_lose = "You lost :(";
 const char *str_start_over = "Type 't' to go to the main screen";
 
 /*Help screen strings*/
-const char *str_instr = "This is going to be a long one. Fill it later";
+const char *str_instr[] = {
+		"Welcome to Flood-It. The rules of the game are listed below.",
+		"The rules are simple:",
+		"1. Click cells. 2. Fill the board with a single color.",
+		"If you manage to fill the entire board with a single color in",
+		"the given number of moves, you win the game. Else, you lose.",
+		"Use wasd keys to move the selection cell in the board.",
+		"Use space key to fill the board with a particular color.",
+		"b : back to the previous screen"};

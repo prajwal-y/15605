@@ -17,6 +17,7 @@ static void handle_p();
 static void handle_r();
 static void handle_h();
 static void handle_t();
+static void handle_b();
 
 /*Other helper functions*/
 static void set_board_type_and_switch(int);
@@ -94,6 +95,11 @@ void read_key_char() {
 			case 'Q':
 			case 'q':
 				handle_q();
+				break;
+	
+			case 'B':
+			case 'b':
+				handle_b();
 				break;
 
 			case 'T':
@@ -222,7 +228,21 @@ void handle_h() {
 	if(cur_screen != TITLE_SCREEN && cur_screen != GAME_SCREEN) {
 		return;
 	}
+	set_previous_screen(cur_screen);
 	switch_to_instr();
+}
+
+/**
+ * @brief Function to handle press of 'b' button. Used from the 
+ * instruction screen to go back to the previous screen.
+ *
+ * @return Void
+ */
+void handle_b() {
+	if(cur_screen != INSTR_SCREEN) {
+		return;
+	}
+	restore_previous_screen();
 }
 
 /**

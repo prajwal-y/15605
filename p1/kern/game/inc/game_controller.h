@@ -83,7 +83,9 @@ void switch_to_game(void);
 void switch_to_instr(void);
 void switch_to_pause(void);
 void switch_to_end(int);
-void resume_game();
+void resume_game(void);
+void restore_previous_screen(void);
+void set_previous_screen(enum SCREEN);
 void add_score(unsigned int, unsigned int, int);
 
 /*Value set functions*/

@@ -417,6 +417,9 @@ void paint_instr_screen() {
 	int row = SCREEN_HEIGHT/4;
     int col = SCREEN_WIDTH/5;
 
-	set_cursor(row, col);
-	printf("%s", str_instr);
+	int i;
+	for(i=0; i<8; i++) {
+		set_cursor(row++, col);
+		printf("%s", str_instr[i]);
+	}
 }
