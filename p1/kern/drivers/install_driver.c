@@ -79,10 +79,10 @@ static int add_idt_entry(int, void *);
  */
 int handler_install(void (*tickback)(unsigned int)) {
 
-	int retval;
+	int ret1, ret2;
 
 	/*Keyboard driver initialization*/
-	retval = add_idt_entry(KEY_IDT_ENTRY, keyboard_handler);
+	ret1 = add_idt_entry(KEY_IDT_ENTRY, keyboard_handler);
 
 	/*Timer driver initialization*/
 	initialize_callback(tickback);	
@@ -91,9 +91,13 @@ int handler_install(void (*tickback)(unsigned int)) {
 	initialize_timer_frequency();
 
 	//Create an IDT entry for timer driver
-	retval = add_idt_entry(TIMER_IDT_ENTRY, timer_handler);
+	ret2 = add_idt_entry(TIMER_IDT_ENTRY, timer_handler);
 
-	return retval;
+	if(ret1==0 && ret2==0) {
+		return 0;
+	}
+	return -1;
+
 }
 
 /**

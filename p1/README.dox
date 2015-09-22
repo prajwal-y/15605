@@ -1,3 +1,25 @@
+/**
+
+@mainpage 15-410 Project 1
+
+@author Prajwal Yadapadithaya (pyadapad)
+
+This project implements the game Flood-It using the device driver
+library. The game basically involves filling a 2D board with colors
+by selecting the existing colors in the board. The game ends when the
+board is filled with one color or the user exceeds the number of moves
+allowed. In the game screen, the board is initialized with random colors
+depending on the board size and number of colors chosen by the user.
+The board also shows a blinking cursor which can be moved around with the 
+help of w,a,s,d keys. A color can be selected using the space key. When 
+the user selects a color, the board is filled with the new color, starting
+from the left top corner, and filling in the cells reachable from that cell.
+The game can be paused using the key 'p' and resumed using 'r'. The help 
+screen can be opened using 'h' from the game play screen or the title screen.
+
+The documentation describing the different files in the implementation of
+the drivers and the game are described below
+
 ############################
 # Documentation for Flood-It
 ############################
@@ -22,14 +44,18 @@ of the files in the kern/drivers folder.
 install_driver.c - Responsible for installing the drivers by adding an entry in the Interrupt
 Descriptor Table for keyboard and timer drivers. The handler_install() method installs both
 the keyboard and timer drivers (after configuring the timer rate and setting the callback
-function in the timer driver).
+function in the timer driver). A struct with bit fields is used to create the IDT entry.
 
 console_driver.c - This file has all the logic required for implementation of the console driver.
-All the interfaces specified in the writeup are implemented in this file.
+All the interfaces specified in the writeup are implemented in this file. The current position of
+the logical cursor is kept track using an position variable which is calculated from the value of
+row and column (row*width+column). When the value of this position exceeds the maximum possible
+value for the screen (width*height), scrolling of the screen is performed (Using memmove() of
+all the rows but first), and then setting the value of the last row to empty character.
 
 keyboard_driver.c - This file has the implementation of the keyboard driver. The keyboard driver is
 responsible for reading the scan codes from the keyboard port. The keyboard uses a queue (implemented
-using a doubly linked list) to implement the readchar() interface.
+using a doubly linked list) for the keyboard buffer to implement the readchar() interface.
 
 timer_driver.c - This file implements the timer driver. It keeps track of the tick count and calls
 the registered callback function at regular intervals based on the frequency set (10 milliseconds in
@@ -65,3 +91,5 @@ game, the corresponding controller functions are invoked.
 
 inc/game_controller.h - This header file contains the functions, variables and constants used by all
 the above four game files.
+
+*/
